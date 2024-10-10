@@ -1,38 +1,32 @@
-# Automated Report Generation Script
+# A Guide to This Project:
 
-This Python script automates the process of generating Word reports by extracting specific data from a MultiQC HTML report and tables from an Excel file. The final report includes both text (extracted data) and tables, and it's built using a pre-defined Word template.
+In this example, I will be showing how to generate a report on set of psuedo-Patients. I use an excel file as my input.
 
-## Step-by-Step Explanation
+## Files and Folders explained:
 
-### 1. Argument Parsing:
-The script uses `argparse` to handle command-line arguments, allowing the user to specify:
-- `-inFile`: The path to the MultiQC HTML report.
-- `-template`: The path to the Word template file.
-- `-excelfile`: The path to the Excel file that contains additional tables.
-- `-outdir`: The directory where the generated Word reports will be saved.
+  - GeneratedReports: This directory will house any of the final reports generated.
+  - PsuedoData: Contains a single excel of made up patients with random mutations from gnomAD database.
+  - ReportTemplate: This directory contains the simple template report template
+  - script: Contains a Python script that turns the excel data into set of reports.
 
-### 2. MultiQC Parsing:
-The `parse_multiqc_report()` function uses `BeautifulSoup` to parse the MultiQC HTML file. It looks for specific sections in the HTML (e.g., coverage and quality metrics) and extracts the relevant values. The extracted values are returned in a dictionary, with keys like `'coverage'` and `'quality'`.
+### NGSexcel2Doc.py Script:
 
-### 3. Excel Table Extraction:
-The `extract_tables_from_excel()` function reads the entire Excel file using `Pandas` and returns the tables (as DataFrames) for each sheet in the Excel file. If the Excel file contains multiple sheets, each sheet is represented as a separate key in the dictionary returned by this function.
+The script can be viewed by opening the the python file in a text editor. If running on the command line the man can be viewed with:
+```
+  python3 script/NGSexcel2Doc.py --h
+```
 
-### 4. Inserting Tables into Word:
-The `insert_table_from_dataframe()` function inserts a DataFrame into a Word document as a table. It creates a new table in the Word document and populates it with the data from the DataFrame (including headers and rows).
-
-### 5. Replacing Placeholders in the Word Template:
-The `replace_placeholders()` function scans through the paragraphs in the Word document and replaces placeholders (e.g., `<<SampleID>>`, `<<CoverageValue>>`) with actual values extracted from the MultiQC report.
-
-### 6. Generating the Final Report:
-The `generate_reports_from_multiqc_and_excel()` function creates a final Word report by:
-- Replacing placeholders in the Word template with the extracted MultiQC data.
-- Inserting tables from the Excel file.
-- Saving the report as a `.docx` file in the specified output directory.
-
-### 7. Main Function:
-The `main()` function orchestrates the entire process:
-- It parses the command-line arguments.
-- Extracts data from the MultiQC report and Excel file.
-- Generates the final report using the Word template.
-
-
+This returns:
+```
+  usage: NGSexcel2Doc.py [-h] -inFile INFILE -template TEMPLATE -outdir OUTPUT
+  
+  options:
+    -h, --help          show this help message and exit
+    -inFile INFILE      Path to input file containing NGS excel file
+    -template TEMPLATE  Path to the word template file
+    -outdir OUTPUT      Path to output directory. This is the directory where all reports will be written too
+```
+To run the script on the commandline:
+```
+  python3 NGSexcel2Doc.py -inFile <path to input excel> -template <path to template docx> -outdir <path to output dir>
+```
